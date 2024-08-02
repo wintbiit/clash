@@ -10,11 +10,13 @@ import (
 	"strings"
 )
 
-const CaddyMainRawFileUrl = "https://raw.githubusercontent.com/caddyserver/caddy/master/cmd/caddy/main.go"
-const CaddyMainPluginLine = 35
+const (
+	CaddyMainRawFileUrl = "https://raw.githubusercontent.com/caddyserver/caddy/master/cmd/caddy/main.go"
+	CaddyMainPluginLine = 35
+)
 
 func main() {
-	os.Mkdir("out", 0755)
+	os.Mkdir("out", 0o755)
 
 	mainFile := saveMainFile()
 	defer mainFile.Close()
@@ -48,7 +50,7 @@ func scanModules() []string {
 }
 
 func saveMainFile() *os.File {
-	mainFile, err := os.OpenFile(path.Join("out", "main.go"), os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0644)
+	mainFile, err := os.OpenFile(path.Join("out", "main.go"), os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0o644)
 	if err != nil {
 		log.Fatal(err)
 	}
