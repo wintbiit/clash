@@ -1,5 +1,3 @@
-ARG CONFIG_PATH=/etc/caddy
-
 FROM golang:1.21-alpine AS generator
 
 WORKDIR /builder
@@ -19,10 +17,9 @@ RUN go mod tidy
 RUN go build -trimpath -ldflags "-s -w" -o /builder/bin/caddy
 
 FROM alpine:3.14
-ARG CONFIG_PATH
 
 COPY --from=builder /builder/bin/caddy /usr/bin/caddy
 
 EXPOSE 80 443 2015
 
-ENTRYPOINT ["/usr/bin/caddy", "run", "--config", "$CONFIG_PATH/Caddyfile", "--adapter", "caddyfile"]
+ENTRYPOINT ["/usr/bin/caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
