@@ -1,15 +1,25 @@
-FROM golang:1.21-alpine AS generator
+ARG CADDY_VERSION="v2.8.4"
+
+FROM golang:1.22-alpine AS generator
+ARG CADDY_VERSION
+ENV CADDY_VERSION=${CADDY_VERSION}
+ENV XCADDY_SKIP_BUILD=1
+ENV XCADDY_SKIP_CLEANUP=1
+
+RUN apk add --no-cache git
 
 WORKDIR /builder
 COPY ./ /builder
+RUN go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
 
-RUN go run build.go
-WORKDIR /builder/out
+RUN xcaddy build \
+    --with github.com/caddy-dns/alidns \
+    --with github.com/caddy-dns/cloudflare \
+    --with github.com/greenpau/caddy-security \
+    --output /builder/out
 
-RUN go mod init caddy && \
-    go mod tidy
-
-FROM golang:1.21-alpine AS builder
+RUN ls -al /builder/out
+FROM golang:1.22-alpine AS builder
 
 WORKDIR /builder
 COPY --from=generator /builder/out/go.mod ./
