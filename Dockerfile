@@ -12,7 +12,7 @@ RUN go mod init caddy && \
 FROM golang:1.21-alpine AS builder
 
 WORKDIR /builder
-COPY --from=generator /builder/out/go.mod /builder/out/go.sum ./
+COPY --from=generator /builder/out/go.mod ./
 
 RUN go mod download
 
