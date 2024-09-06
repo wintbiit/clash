@@ -1,6 +1,6 @@
 ARG CADDY_VERSION="v2.8.4"
 
-FROM golang:1.22-alpine AS generator
+FROM golang:1.22-alpine AS builder
 ARG CADDY_VERSION
 ENV CADDY_VERSION=${CADDY_VERSION}
 ENV XCADDY_SKIP_BUILD=1
@@ -15,20 +15,9 @@ RUN go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
 RUN xcaddy build \
     --with github.com/caddy-dns/alidns \
     --with github.com/caddy-dns/cloudflare \
-    --with github.com/greenpau/caddy-security \
-    --output /builder/out
+    --with github.com/greenpau/caddy-security
 
-RUN ls -al /builder/out
-FROM golang:1.22-alpine AS builder
-
-WORKDIR /builder
-COPY --from=generator /builder/out/go.mod ./
-
-RUN go mod download
-
-COPY --from=generator /builder/out /builder
-
-RUN go build -trimpath -ldflags "-s -w" -o /builder/bin/caddy
+RUN ls -al /builder
 
 FROM alpine:3.14
 
