@@ -32,7 +32,6 @@ RUN addgroup -S caddy && \
     curl \
     ca-certificates \
     openssl \
-    certutil \
     tzdata \
     && update-ca-certificates \
     && rm -rf /var/cache/apk/* \
