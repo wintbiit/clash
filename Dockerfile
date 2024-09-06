@@ -3,8 +3,8 @@ ARG CADDY_VERSION="v2.8.4"
 FROM golang:1.22-alpine AS builder
 ARG CADDY_VERSION
 ENV CADDY_VERSION=${CADDY_VERSION}
-ENV XCADDY_SKIP_BUILD=1
 ENV XCADDY_SKIP_CLEANUP=1
+ENV XCADDY_GO_BUILD_FLAGS="-trimpath -ldflags='-s -w'"
 
 RUN apk add --no-cache git
 
@@ -15,9 +15,8 @@ RUN go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
 RUN xcaddy build \
     --with github.com/caddy-dns/alidns \
     --with github.com/caddy-dns/cloudflare \
-    --with github.com/greenpau/caddy-security
-
-RUN ls -al /builder
+    --with github.com/greenpau/caddy-security \
+    --output /builder/bin/caddy
 
 FROM alpine:3.14
 
