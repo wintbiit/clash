@@ -1,4 +1,4 @@
-ARG CADDY_VERSION="v2.8.4"
+ARG CADDY_VERSION="v2.6.1"
 
 FROM golang:1.22-alpine AS builder
 ARG CADDY_VERSION
