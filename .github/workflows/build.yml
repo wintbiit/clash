@@ -40,8 +40,8 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            ghcr.io/${{ github.repository }}/clash:latest
-            ghcr.io/${{ github.repository }}/clash:${{ github.sha }}
+            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:${{ github.sha }}
           labels: |
             org.opencontainers.image.source=https://github.com/wintbiit/clash
             org.opencontainers.image.revision=${{ github.sha }}
