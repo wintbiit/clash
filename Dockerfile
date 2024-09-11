@@ -1,48 +1,33 @@
-ARG CADDY_VERSION="v2.7.6"
+ARG CLASH_VERSION="v1.18.8"
 
 FROM golang:1.22-alpine AS builder
-ARG CADDY_VERSION
-ENV CADDY_VERSION=${CADDY_VERSION}
-ENV XCADDY_SKIP_CLEANUP=1
-ENV XCADDY_GO_BUILD_FLAGS="-trimpath -ldflags='-s -w'"
+ARG CLASH_VERSION
 
-RUN apk add --no-cache git
+RUN apk add --no-cache wget git
+WORKDIR /build
 
-WORKDIR /builder
-COPY ./ /builder
-RUN go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+RUN wget "https://github.com/MetaCubeX/mihomo/archive/refs/tags/${CLASH_VERSION}.zip" -O clash.zip && \
+    unzip clash.zip && \
+    mv mihomo-${CLASH_VERSION} clash && \
+    cd clash && \
+    go mod download
 
-RUN xcaddy build \
-    --with github.com/caddy-dns/alidns \
-    --with github.com/caddy-dns/cloudflare \
-    --with github.com/greenpau/caddy-security \
-    --with github.com/yroc92/postgres-storage \
-    --output /builder/bin/caddy
+WORKDIR /build/clash
+
+RUN go build -trimpath -ldflags="-s -w" -o /build/bin/clash
 
 FROM alpine:3.14
-
 ENV TZ=Asia/Shanghai
+ENV PATH /usr/local/bin:$PATH
 
-RUN addgroup -S caddy && \
-    adduser -D -S -s /sbin/nologin -G caddy caddy && \
-    mkdir -p /etc/caddy /usr/share/caddy /var/lib/caddy && \
-    chown -R caddy:caddy /etc/caddy /usr/share/caddy /var/lib/caddy \
-    && apk add --no-cache --virtual .build-deps \
-    curl \
-    ca-certificates \
-    openssl \
-    tzdata \
-    && update-ca-certificates \
-    && rm -rf /var/cache/apk/* \
-    && rm -rf /tmp/* \
-    && rm -rf /var/tmp/* \
-    && cp /usr/share/zoneinfo/$TZ /etc/localtime \
-    && echo $TZ > /etc/timezone
+RUN apk add --no-cache tzdata ca-certificates && \
+    cp /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo "${TZ}" > /etc/timezone && \
+    rm -rf /var/cache/apk/*
 
-USER caddy
+COPY --from=builder /build/bin/clash /usr/local/bin/clash
+RUN chmod +x /usr/local/bin/clash
 
-COPY --from=builder /builder/bin/caddy /usr/bin/caddy
+VOLUME /etc/clash
 
-EXPOSE 80 443 2015
-
-ENTRYPOINT ["/usr/bin/caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
+ENTRYPOINT ["clash", "-d", "/etc/clash"]
