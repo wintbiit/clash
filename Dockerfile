@@ -7,7 +7,7 @@ RUN apk add --no-cache wget git
 WORKDIR /build
 
 RUN wget "https://github.com/MetaCubeX/mihomo/archive/refs/tags/v${CLASH_VERSION}.zip" -O clash.zip && \
-    unzip clash.zip && \
+    unzip -q clash.zip && \
     mv mihomo-${CLASH_VERSION} clash && \
     cd clash && \
     go mod download

@@ -42,12 +42,12 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            ghcr.io/wintbiit/clashbuild:latest
-            ghcr.io/wintbiit/clashbuild:${{ github.sha }}
+            ghcr.io/wintbiit/clash:latest
+            ghcr.io/wintbiit/clash:${{ github.sha }}
           labels: |
-            org.opencontainers.image.source=https://github.com/wintbiit/ClashBuild
+            org.opencontainers.image.source=https://github.com/wintbiit/clash
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.created=${{ github.event.head_commit.timestamp }}
-            org.opencontainers.image.title=Clash
+            org.opencontainers.image.title=clash
           cache-from: type=gha
           cache-to: type=gha,mode=max
