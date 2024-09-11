@@ -2,6 +2,10 @@ name: Build
 
 on: [push, pull_request]
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -36,8 +40,8 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            ghcr.io/wintbiit/clash:latest
-            ghcr.io/wintbiit/clash:${{ github.sha }}
+            ghcr.io/${{ github.repository }}/clash:latest
+            ghcr.io/${{ github.repository }}/clash:${{ github.sha }}
           labels: |
             org.opencontainers.image.source=https://github.com/wintbiit/clash
             org.opencontainers.image.revision=${{ github.sha }}

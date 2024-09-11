@@ -18,7 +18,7 @@ RUN go build -trimpath -ldflags="-s -w" -o /build/bin/clash
 
 FROM alpine:3.14
 ENV TZ=Asia/Shanghai
-ENV PATH /usr/local/bin:$PATH
+ENV PATH=/usr/local/bin:$PATH
 
 RUN apk add --no-cache tzdata ca-certificates && \
     cp /usr/share/zoneinfo/${TZ} /etc/localtime && \
