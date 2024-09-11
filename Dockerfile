@@ -16,6 +16,7 @@ RUN xcaddy build \
     --with github.com/caddy-dns/alidns \
     --with github.com/caddy-dns/cloudflare \
     --with github.com/greenpau/caddy-security \
+    --with github.com/yroc92/postgres-storage \
     --output /builder/bin/caddy
 
 FROM alpine:3.14
