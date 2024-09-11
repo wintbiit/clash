@@ -1,4 +1,4 @@
-ARG CLASH_VERSION="v1.18.8"
+ARG CLASH_VERSION="1.18.8"
 
 FROM golang:1.22-alpine AS builder
 ARG CLASH_VERSION
@@ -6,7 +6,7 @@ ARG CLASH_VERSION
 RUN apk add --no-cache wget git
 WORKDIR /build
 
-RUN wget "https://github.com/MetaCubeX/mihomo/archive/refs/tags/${CLASH_VERSION}.zip" -O clash.zip && \
+RUN wget "https://github.com/MetaCubeX/mihomo/archive/refs/tags/v${CLASH_VERSION}.zip" -O clash.zip && \
     unzip clash.zip && \
     mv mihomo-${CLASH_VERSION} clash && \
     cd clash && \
