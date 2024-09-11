@@ -42,8 +42,8 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            ghcr.io/wintbiit/ClashBuild:latest
-            ghcr.io/wintbiit/ClashBuild:${{ github.sha }}
+            ghcr.io/wintbiit/clashbuild:latest
+            ghcr.io/wintbiit/clashbuild:${{ github.sha }}
           labels: |
             org.opencontainers.image.source=https://github.com/wintbiit/ClashBuild
             org.opencontainers.image.revision=${{ github.sha }}
